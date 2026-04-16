@@ -1,0 +1,26 @@
+FUNCTION authenticate_user (
+    p_username IN VARCHAR2,
+    p_password IN VARCHAR2
+) RETURN BOOLEAN
+IS
+    l_username user_info.user_name%TYPE;
+    l_password user_info.user_pass%TYPE;
+BEGIN
+    -- Retrieve user credentials based on the provided username
+    SELECT user_name, user_pass
+    INTO l_username, l_password
+    FROM user_info
+    WHERE LOWER(user_name) = LOWER(p_username);
+
+    -- Check if the retrieved password matches the provided password
+    IF l_password = p_password THEN
+        RETURN TRUE; -- Authentication successful
+    ELSE
+        RETURN FALSE; -- Authentication failed
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN FALSE; -- User not found
+    WHEN OTHERS THEN
+        RETURN FALSE; -- Other errors
+END authenticate_user;
